@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#颜色
+#彩色
 red(){
     echo -e "\033[31m\033[01m$1\033[0m"
 }
@@ -14,43 +14,31 @@ blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
 
-#服务器检查项目
-#Lemonbench 综合测试
-function Lemonbench(){
-curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast
-}
-
-#三网Speedtest测速
-function 3speed(){
-bash <(curl -Lso- https://raw.githubusercontent.com/BlueSkyXN/SpeedTestCN/main/superspeed.sh)
-}
-
-#Memorytest 内存压力测试
-function memorytest(){
-yum install wget -y
-yum groupinstall "Development Tools" -y
-wget https://raw.githubusercontent.com/FunctionClub/Memtester/master/memtester.cpp
+#IPV.SH ipv4/6优先级调整一键脚本·下载
+function ipvsh(){
+wget -O "/root/ipv.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/ipv.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/ipv.sh"
+chmod 777 "/root/ipv.sh"
 blue "下载完成"
-gcc -l stdc++ memtester.cpp
-./a.out
+blue "输入 bash /root/ipv.sh 来运行"
 }
 
-#Route-trace 回城路由追踪
-function rtsh(){
-wget -O "/root/jcnf.sh" "https://raw.githubusercontent.com/Netflixxp/jcnfbesttrace/main/jcnf.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/jcnf.sh"
-chmod 777 "/root/jcnf.sh"
-yellow "下载完成,之后可执行 bash /root/jcnf.sh 再次运行"
-bash "/root/jcnf.sh"
+#IPT.SH iptable一键脚本·下载
+function iptsh(){
+wget -O "/root/ipt.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/ipt.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/ipt.sh"
+chmod 777 "/root/ipt.sh"
+blue "下载完成"
+blue "输入 bash /root/ipt.sh 来运行"
 }
 
 #Speedtest for Linux·下载
 function speedtest-linux(){
-wget -O "/root/speedtest" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/speedtest" --no-check-certificate -T 30 -t 5 -d
+wget -O "/root/speedtest" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/speedtest" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/speedtest"
 chmod 777 "/root/speedtest"
-yellow "下载完成,之后可执行 bash /root/speedtest 再次运行"
-./speedtest
+blue "下载完成"
+blue "输入 /root/speedtest 来运行"
 }
 
 #获取本机IP
@@ -60,80 +48,47 @@ curl ip.p3terx.com
 echo
 }
 
-#nf.sh 流媒体解锁测试
-function nf(){
-        #安装JQ
-	if [ -e "/etc/redhat-release" ];then
-	yum install epel-release -y -q > /dev/null;
-	yum install jq -y -q > /dev/null;
-	elif [[ $(cat /etc/os-release | grep '^ID=') =~ ubuntu ]] || [[ $(cat /etc/os-release | grep '^ID=') =~ debian ]];then
-	apt-get update -y > /dev/null;
-	apt-get install jq > /dev/null;
-	else 
-	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
-	exit;
-	fi
-        jq -V > /dev/null 2>&1;
-        if [ $? -ne 0 ];then
-	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
-	exit;
-        fi
-bash <(curl -sSL https://raw.githubusercontent.com/Netflixxp/NF/main/nf.sh)
-}
 
-#检测/诊断Youtube地域
-function tubecheck(){
-wget -O "/root/tubecheck" "https://cdn.jsdelivr.net/gh/sjlleo/TubeCheck/CDN/tubecheck_1.0beta_linux_amd64" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/tubecheck"
-chmod 777 "/root/tubecheck"
-yellow "下载完成,之后可执行 ./tubecheck 再次运行"
-./tubecheck
-}
-
-#服务器功能调试
-#ChangeSource Linux换源脚本·下载
-function cssh(){
-wget -O "/root/changesource.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/changesource.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/changesource.sh"
-chmod 777 "/root/changesource.sh"
-yellow "下载完成"
+#安装最新BBR内核·使用YUM
+function bbrnew(){
+wget -O "/root/bbr.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/bbr.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/bbr.sh"
+chmod 777 "/root/bbr.sh"
+blue "下载完成，开始运行"
+bash "/root/bbr.sh"
+blue "BBR内核安装结束，开始修复grub"
+yum install -y grub
+grub-mkconfig -o /boot/grub/grub.conf
+yum install -y grub2
+grub2-mkconfig -o /boot/grub2/grub.cfg
+blue "修复grub完成，显示内核参数如下"
+echo " =================================================="
+yellow "当前正在使用的内核"
+uname -a
+echo " =================================================="
+yellow "系统已经安装的全部内核"
+rpm -qa | grep kernel
+echo " =================================================="
+yellow "可使用的内核列表"
+awk -F\' '$1=="menuentry " {print i++ " : " $2}' /etc/grub2.cfg
+echo " =================================================="
+yellow "当前默认内核启动项"
 echo
-green "请自行输入下面命令切换对应源"
-green " =================================================="
-echo
-green " bash changesource.sh 切换推荐源 "
-green " bash changesource.sh cn  切换中科大源 "
-green " bash changesource.sh aliyun 切换阿里源 "
-green " bash changesource.sh 163 切换网易源 "
-green " bash changesource.sh aws 切换AWS亚马逊云源 "
-green " bash changesource.sh restore 还原默认源 "
+grub2-editenv list
+echo " =================================================="
+yellow "请自行重启后启动BBR加速"
+echo " =================================================="
+
 }
 
-#IPV.SH ipv4/6优先级调整
-function ipvsh(){
-wget -O "/root/ipv4.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/ipv4.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/ipv4.sh"
-chmod 777 "/root/ipv4.sh"
-yellow "下载完成,之后可执行 bash /root/ipv4.sh 再次运行"
-bash "/root/ipv4.sh"
-}
 
-#SWAP一键安装/卸载脚本
-function swapsh(){
-wget -O "/root/swap.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/master/sh/swap.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/swap.sh"
-chmod 777 "/root/swap.sh"
-yellow "下载完成,你也可以输入 bash /root/swap.sh 来手动运行"
-bash "/root/swap.sh"
-}
-
-#安装BBR
-function bbr(){
-wget -O "/root/tcp.sh" "https://github.000060000.xyz/tcp.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/tcp.sh"
-chmod 777 "/root/tcp.sh"
-yellow "下载完成,你也可以输入 bash /root/tcp.sh 来手动运行"
-bash "/root/tcp.sh"
+#启动BBR FQ算法
+function bbrfq(){
+remove_bbr_lotserver
+	echo "net.core.default_qdisc=fq" >> /etc/sysctl.d/99-sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.d/99-sysctl.conf
+	sysctl --system
+	echo -e "BBR+FQ修改成功，重启生效！"
 }
 
 #系统网络配置优化
@@ -189,50 +144,129 @@ sysctl -p
 	fi
 }
 
-#宝塔面板 官方版·一键安装
-function btnew(){
-wget -O "/root/install.sh" "http://download.bt.cn/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/install.sh"
-chmod 777 "/root/install.sh"
+#MT.SH 流媒体解锁测试
+function mtsh(){
+        #安装JQ
+	if [ -e "/etc/redhat-release" ];then
+	yum install epel-release -y -q > /dev/null;
+	yum install jq -y -q > /dev/null;
+	elif [[ $(cat /etc/os-release | grep '^ID=') =~ ubuntu ]] || [[ $(cat /etc/os-release | grep '^ID=') =~ debian ]];then
+	apt-get update -y > /dev/null;
+	apt-get install jq > /dev/null;
+	else 
+	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
+	exit;
+	fi
+
+        jq -V > /dev/null 2>&1;
+        if [ $? -ne 0 ];then
+	echo -e "${Font_Red}请手动安装jq${Font_Suffix}";
+	exit;
+        fi
+
+wget -O "/root/mt.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/mt.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/mt.sh"
+chmod 777 "/root/mt.sh"
 blue "下载完成"
-bash "/root/install.sh"
+blue "你也可以输入 bash /root/mt.sh 来手动运行"
+bash /root/mt.sh
 }
 
-#宝塔面板英文官方版·一键安装
-function aaPanel(){
-wget -O "/root/aaPanel.sh" "http://www.aapanel.com/script/install_6.0_en.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/aaPanel.sh"
-chmod 777 "/root/aaPanel.sh"
+#Rclone版&Fclone·下载
+function clonesh(){
+wget -O "/usr/bin/rclone" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/rcloneamd" --no-check-certificate -T 30 -t 5 -d
+wget -O "/usr/bin/fclone" "https://raw.githubusercontent.com/BlueSkyXN/RcloneX/master/fclone" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/usr/bin/rclone"
+chmod +x "/usr/bin/fclone"
+chmod 777 "/usr/bin/rclone"
+chmod 777 "/usr/bin/fclone"
+}
+
+#ChangeSource Linux换源脚本·下载
+function cssh(){
+wget -O "/root/changesource.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/changesource.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/changesource.sh"
+chmod 777 "/root/changesource.sh"
 blue "下载完成"
-bash "/root/aaPanel.sh"
+echo
+green "请自行输入下面命令切换对应源"
+green " =================================================="
+echo
+green " bash changesource.sh 切换推荐源 "
+green " bash changesource.sh cn  切换中科大源 "
+green " bash changesource.sh aliyun 切换阿里源 "
+green " bash changesource.sh 163 切换网易源 "
+green " bash changesource.sh aws 切换AWS亚马逊云源 "
+green " bash changesource.sh restore 还原默认源 "
 }
 
-#宝塔面板破解版·一键安装
-function btpj(){
-wget -O "/root/btpj.sh" "http://download.hostcli.com/install/install_6.0.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/btpj.sh"
-chmod 777 "/root/btpj.sh"
+#Besttrace 路由追踪·下载
+function gettrace(){
+wget -O "/root/besttrace" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/besttrace" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/besttrace"
+chmod 777 "/root/besttrace"
 blue "下载完成"
-bash "/root/btpj.sh"
+blue "输入 /root/besttrace 来运行"
 }
 
-#科学上网工具
-#iptables.sh iptable中转
-function iptsh(){
-wget -O "/root/iptables.sh" "https://raw.githubusercontent.com/Netflixxp/jcnf-box/main/sh/iptables.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/iptables.sh"
-chmod 777 "/root/iptables.sh"
-yellow "下载完成，你也可以输入 bash /root/iptables.sh 来手动运行"
-bash "/root/iptables.sh"
+#Lemonbench 综合测试
+function Lemonbench(){
+curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast
 }
 
-#gost.sh gost一键中转
-function gost(){
-wget -O "/root/gost.sh" "https://raw.githubusercontent.com/KANIKIG/Multi-EasyGost/master/gost.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/gost.sh"
-chmod 777 "/root/gost.sh"
-yellow "下载完成，你也可以输入 bash /root/gost.sh 来手动运行"
-bash "/root/gost.sh"
+#UNIXbench 综合测试
+function UNIXbench(){
+wget -O "/root/unixbench.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/unixbench.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/unixbench.sh"
+chmod 777 "/root/unixbench.sh"
+blue "下载完成"
+bash "/root/unixbench.sh"
+}
+
+#三网Speedtest测速
+function 3speed(){
+bash <(curl -Lso- https://raw.githubusercontent.com/BlueSkyXN/SpeedTestCN/main/superspeed.sh)
+}
+
+#Superbench 综合测试
+function superbench(){
+wget -O "/root/superbench.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/superbench.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/superbench.sh"
+chmod 777 "/root/superbench.sh"
+blue "下载完成"
+bash "/root/superbench.sh"
+}
+
+#Memorytest 内存压力测试
+function memorytest(){
+yum install wget -y
+yum groupinstall "Development Tools" -y
+wget https://raw.githubusercontent.com/FunctionClub/Memtester/master/memtester.cpp
+blue "下载完成"
+gcc -l stdc++ memtester.cpp
+./a.out
+}
+
+#NEZHA.SH哪吒面板/探针·下载
+function nezha(){
+wget -O "/root/nezha.sh" "https://raw.githubusercontent.com/BlueSkyXN/nezha/master/script/install.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/nezha.sh"
+chmod 777 "/root/nezha.sh"
+blue "你也可以输入 bash /root/nezha.sh 来手动运行"
+blue "下载完成"
+bash "/root/nezha.sh"
+}
+
+
+
+#Aria2 最强安装与管理脚本
+function aria(){
+wget -O "/root/aria2.sh" "https://raw.githubusercontent.com/P3TERX/aria2.sh/master/aria2.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/aria2.sh"
+chmod 777 "/root/aria2.sh"
+blue "你也可以输入 bash /root/aria2.sh 来手动运行"
+blue "下载完成"
+bash "/root/aria2.sh"
 }
 
 #MTP&TLS 一键脚本
@@ -240,155 +274,248 @@ function mtp(){
 wget -O "/root/mtp.sh" "https://raw.githubusercontent.com/sunpma/mtp/master/mtproxy.sh" --no-check-certificate -T 30 -t 5 -d
 chmod +x "/root/mtp.sh"
 chmod 777 "/root/mtp.sh"
-yellow "下载完成，你也可以输入 bash /root/mtp.sh 来手动运行"
+blue "你也可以输入 bash /root/mtp.sh 来手动运行"
+blue "下载完成"
 bash "/root/mtp.sh"
 }
 
-#xray.sh xray一键安装8合一
-function xray(){
-wget -O "/root/xray.sh" "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/xray.sh"
-chmod 777 "/root/xray.sh"
-yellow "下载完成，你也可以输入 bash /root/xray.sh 来手动运行"
-bash "/root/xray.sh"
+#Rclone官方一键安装脚本
+function rc(){
+curl https://rclone.org/install.sh | sudo bash
 }
 
-#wulabing.sh wulabingxray安装脚本
-function wulabing(){
-wget -O "/root/wulabing.sh" "https://raw.githubusercontent.com/wulabing/Xray_onekey/main/install.sh" --no-check-certificate -T 30 -t 5 -d
-chmod +x "/root/wulabing.sh"
-chmod 777 "/root/wulabing.sh"
-yellow "下载完成，你也可以输入 bash /root/wulabing.sh 来手动运行"
-bash "/root/wulabing.sh"
+#宝塔面板综合安装脚本
+function btbox(){
+wget -O "/root/btbox.sh" "https://raw.githubusercontent.com/Colsine/Scripts/main/Box/bt.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/btbox.sh"
+chmod 777 "/root/btbox.sh"
+blue "下载完成"
+bash "/root/btbox.sh"
 }
 
-#v2-ui.sh 一键安装
-function v2-ui(){
-bash <(curl -Ls https://blog.sprov.xyz/v2-ui.sh)
+#宝塔面板 自动磁盘挂载工具
+function btdisk(){
+wget -O auto_disk.sh http://download.bt.cn/tools/auto_disk.sh && bash auto_disk.sh
 }
 
-# Cloudflare WARP 一键配置脚本
-function WARP(){
-bash <(curl -fsSL git.io/warp.sh) menu
+#Git 新版 安装
+function yumgitsh(){
+wget -O "/root/yum-git.sh" "https://raw.githubusercontent.com/BlueSkyXN/Yum-Git/main/yum-git.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/yum-git.sh"
+chmod 777 "/root/yum-git.sh"
+blue "下载完成"
+blue "你也可以输入 bash /root/yum-git.sh 来手动运行"
+bash "/root/yum-git.sh"
 }
 
-# Ehcoo隧道中转
-function ehco(){
-bash <(curl -fsSL https://leo.moe/ehco.sh)
+#BBR一键管理脚本
+function tcpsh(){
+wget -O "/root/tcp.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/tcp.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/tcp.sh"
+chmod 777 "/root/tcp.sh"
+blue "下载完成"
+blue "你也可以输入 bash /root/tcp.sh 来手动运行"
+bash "/root/tcp.sh"
+}
+
+#SWAP一键安装/卸载脚本
+function swapsh(){
+wget -O "/root/swap.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/swap.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/swap.sh"
+chmod 777 "/root/swap.sh"
+blue "下载完成"
+blue "你也可以输入 bash /root/swap.sh 来手动运行"
+bash "/root/swap.sh"
+}
+
+#Route-trace 路由追踪测试
+function rtsh(){
+wget -O "/root/rt.sh" "https://raw.githubusercontent.com/BlueSkyXN/Route-trace/main/rt.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/rt.sh"
+chmod 777 "/root/rt.sh"
+blue "下载完成"
+blue "你也可以输入 bash /root/rt.sh 来手动运行"
+bash "/root/rt.sh"
+}
+
+#Yabs.sh测试
+function yabssh(){
+wget -O "/root/yabs.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/yabs.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/yabs.sh"
+chmod 777 "/root/yabs.sh"
+blue "下载完成"
+bash "/root/yabs.sh"
+}
+
+#Disk Test 硬盘&系统综合测试
+function disktestsh(){
+wget -O "/root/disktest.sh" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/disktest.sh" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/disktest.sh"
+chmod 777 "/root/disktest.sh"
+blue "下载完成"
+bash "/root/disktest.sh"
+}
+
+#TubeCheck Google/Youtube CDN分配节点测试
+function tubecheck(){
+wget -O "/root/TubeCheck" "https://raw.githubusercontent.com/BlueSkyXN/ChangeSource/master/TubeCheck" --no-check-certificate -T 30 -t 5 -d
+chmod +x "/root/TubeCheck"
+chmod 777 "/root/TubeCheck"
+blue "下载完成"
+red "识别成无信息/NULL/未知等代表为默认的美国本土地区或者不可识别/无服务的中国大陆地区"
+"/root/TubeCheck"
+}
+
+#RegionRestrictionCheck 流媒体解锁测试
+function RegionRestrictionCheck(){
+bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
+}
+
+#F2B一键安装脚本
+function f2bsh(){
+red "卸载请 运行 wget https://raw.githubusercontent.com/FunctionClub/Fail2ban/master/uninstall.sh && bash uninstall.sh"
+wget https://raw.githubusercontent.com/FunctionClub/Fail2ban/master/fail2ban.sh && bash fail2ban.sh 2>&1 | tee fail2ban.log
+red "卸载请 运行 wget https://raw.githubusercontent.com/FunctionClub/Fail2ban/master/uninstall.sh && bash uninstall.sh"
 }
 
 #主菜单
 function start_menu(){
     clear
-    red " Box" 
-    	
-	yellow " =======服务器检查============================== "
-    green " 1. Lemonbench 综合测试 "
-    green " 2. 三网Speedtest测速"
-    green " 3. 内存压力测试"
-    green " 4. 回程路由追踪" 
-    green " 5. Speedtest测速"
-    green " 6. 获取本机IP"
-    green " 7. 流媒体解锁测试"
-	green " 8. 检测/诊断Youtube地域"
-	
-    yellow " =======服务器功能============================== "
-    green " 11. Linux换源脚本"
-    green " 12. ipv4/6优先级调整 " 
-    green " 13. 虚拟内存SWAP一键安装 "
-    green " 14. 一键安装BBR "
-    green " 15. 系统网络配置优化 "
-    green " 16. 宝塔中文官方一键安装 "
-	green " 17. 宝塔英文官方一键安装（无需验证） "
-	green " 18. 宝塔面板破解纯净版 "
-	green " 19. Cloudflare WARP 一键配置脚本 "
-
-    yellow " =======科学上网工具============================ "
-    green " 21. iptables一键中转 "
-    green " 22. gost一键中转 "
-    green " 23. MTP&TLS 一键脚本 "
-    green " 24. xray一键安装8合一脚本 "
-    green " 25. v2-ui一键安装 "
-	green " 26. wulabing一键xray脚本 "
-	green " 27. Ehcoo隧道中转 "
-	
-    yellow " =============================================== "
+    red "  Linux Box" 
+    yellow " =================================================="
+    green " 1. IPV.SH ipv4/6优先级调整一键脚本·下载" 
+    green " 2. IPT.SH iptable一键脚本"
+    green " 3. SpeedTest-Linux 下载"
+    green " 4. Rclone&Fclone·下载" 
+    green " 5. ChangeSource Linux换源脚本·下载"
+    green " 6. Besttrace 路由追踪·下载"
+    green " 7. NEZHA.SH哪吒面板/探针"
+    yellow " --------------------------------------------------"
+    green " 11. 获取本机IP"
+    green " 12. 安装最新BBR内核·使用YUM·仅支持CentOS" 
+    green " 13. 启动BBR FQ算法"
+    green " 14. 系统网络配置优化"
+    green " 15. Git 新版 安装·仅支持CentOS"
+    green " 16. 宝塔面板 自动磁盘挂载工具"
+    green " 17. BBR一键管理脚本" 
+    green " 18. SWAP一键安装/卸载脚本"
+    green " 19. F2B一键安装脚本"
+    yellow " --------------------------------------------------"
+    green " 21. Superbench 综合测试"
+    green " 22. MT.SH 流媒体解锁测试"
+    green " 23. Lemonbench 综合测试"
+    green " 24. UNIXbench 综合测试"
+    green " 25. 三网Speedtest测速"
+    green " 26. Memorytest 内存压力测试"
+    green " 27. Route-trace 路由追踪测试"
+    green " 28. YABS LINUX综合测试"
+    green " 29. Disk Test 硬盘&系统综合测试"
+    green " 210.TubeCheck Google/Youtube CDN分配节点测试"
+    green " 211.RegionRestrictionCheck 流媒体解锁测试"
+    yellow " --------------------------------------------------"
+    green " 31. MTP&TLS 一键脚本"
+    green " 32. Rclone官方一键安装脚本"
+    green " 33. Aria2 最强安装与管理脚本"
+    yellow " --------------------------------------------------"
+    green " 00. 宝塔面板综合安装脚本"
+    green " =================================================="
     green " 0. 退出脚本"
     echo
     read -p "请输入数字:" menuNumberInput
     case "$menuNumberInput" in
         1 )
-           Lemonbench
-	;;
-        2 )
-           3speed
-	;;
-        3 )
-           memorytest
-	;;
-        4 )
-           rtsh
-	;;
-        5 )
-           speedtest-linux
-	;;
-	    6 )
-           getip
-	;;
-	    7 )
-           nf
-	;;
-		8 )
-           tubecheck
-	;;
-		11 )
-           cssh
-	;;
-		12 )
            ipvsh
 	;;
-		13 )
-           swapsh
-	;;
-		14 )
-           bbr
-	;;
-		15 )
-           system-best
-	;;
-		16 )
-           btnew
-	;;
-		17 )
-           aaPanel
-	;;
-		18 )
-           btpj
-	;;
-		19 )
-           WARP
-	;;
-		21 )
+        2 )
            iptsh
 	;;
-		22 )
-           gost
+        3 )
+           speedtest-linux
 	;;
-		23 )
+        4 )
+           clonesh
+	;;
+        5 )
+           cssh
+	;;
+	6 )
+           gettrace
+	;;
+	7 )
+           nezha
+	;;
+	11 )
+           getip
+	;;
+	12 )
+           bbrnew
+	;;
+	13 )
+           bbrfq
+	;;
+	14 )
+           system-best
+	;;
+	15 )
+           yumgitsh
+	;;
+	16 )
+           btdisk
+	;;
+	17 )
+           tcpsh
+	;;
+	18 )
+           swapsh
+	;;
+	19 )
+           f2bsh
+	;;
+	21 )
+           superbench
+	;;
+	22 )
+           mtsh
+	;;
+	23 )
+           Lemonbench
+	;;
+	24 )
+           UNIXbench
+	;;
+	25 )
+           3speed
+	;;
+	26 )
+           memorytest
+	;;
+	27 )
+           rtsh
+	;;
+	28 )
+           yabssh
+	;;
+	29 )
+           disktestsh
+	;;
+	210 )
+	   tubecheck
+	;;
+	211 )
+	   RegionRestrictionCheck
+	;;
+	31 )
            mtp
 	;;
-		24 )
-           xray
+	32 )
+           rc
 	;;
-		25 )
-           v2-ui
+        33 )
+           aria
 	;;
-		26 )
-           wulabing
-	;;
-		27 )
-           ehco
-	;;
+	00 )
+            btbox
+        ;;
         0 )
             exit 1
         ;;
@@ -399,6 +526,4 @@ function start_menu(){
         ;;
     esac
 }
-
-
 start_menu "first"
