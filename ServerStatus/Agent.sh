@@ -8,7 +8,7 @@
 SSS_BASE_PATH="/opt/ServerStatus"
 SSS_AGENT_PATH="${SSS_BASE_PATH}/agent"
 SSS_AGENT_SERVICE="/etc/systemd/system/agent.service"
-GITHUB_RAW_URL="https://raw.githubusercontent.com/Colsine/Scripts/main/ServerStatus"
+GITHUB_RAW_URL="https://raw.githubusercontent.com/Colsine/Scripts/ServerStatus/main"
 
 red='\033[0;31m'
 green='\033[0;32m'
